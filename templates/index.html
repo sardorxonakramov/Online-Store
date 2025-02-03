@@ -1,0 +1,115 @@
+{% extends 'base.html' %} 
+{% load humanize %}
+
+{% block content %}
+
+<header class="bg-dark py-5">
+	<div class="container px-4 px-lg-5 my-5">
+		<div class="text-center text-white">
+			<h1 class="display-4 fw-bolder">Shop in style</h1>
+			<p class="lead fw-normal text-white-50 mb-0">
+				With this shop hompeage template
+			</p>
+		</div>
+	</div>
+</header>
+<!-- Section-->
+
+<div class="container mt-5">
+	<div class="text-left">
+		<h3>Filter by</h3>
+	</div>
+	<div class="d-flex align-items-center gap-2">
+		<div>
+			<a class="btn btn-outline-dark mt-auto" id="filter-link" href="?q=expensive"> Expensive </a>
+		</div>
+
+		<div>
+			<a class="btn btn-outline-dark mt-auto" id="filter-link" href="?q=cheap"> Cheap </a>
+		</div>
+
+		<div>
+			<a class="btn btn-outline-dark mt-auto" id="filter-link" href="?q=rating"> Rating </a>
+		</div>
+	</div>
+</div>
+
+<section class="py-5">
+	<div class="container px-4 px-lg-5 mt-5">
+		<div
+			class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4"
+		>
+			{% for product in products %}
+				<div class="col mb-5">
+					<div class="card h-100">
+						{% if product.is_sale %}
+							<div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+						{% endif %}
+						<!-- Product image-->
+						<img
+						class="card-img-top"
+						src="{% if produc.images %}
+						{{ produc.images.url }}
+						{% else %}
+						https://dummyimage.com/450x300/dee2e6/6c757d.jpg
+						{% endif %}"
+						alt="{{ produc.name }}"
+						width="450"
+						height="300"
+					  />
+						<!-- Product details-->
+						<div class="card-body p-4">
+							<div class="text-center">
+								<!-- Product name-->
+								<h5 class="fw-bolder">{{ product.name }}</h5>
+								<!-- Product reviews-->
+								<div
+									class="d-flex justify-content-center small text-warning mb-2"
+								>
+									{% for star in '12345' %}
+										{% if product.rating|default:0 >= star|add:"0" %}
+											<div class="bi-star-fill"></div>
+										{% else %}
+											<div class="bi-star"></div>
+										{% endif %}
+									{% endfor %}
+								</div>
+								<!-- Product price-->
+								<del class="text-muted">${{ product.old_price|intcomma }}</del> - <span>${{ product.new_price|intcomma }}</span>
+							</div>
+						</div>
+						<!-- Product actions-->
+						<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+							<div class="text-center">
+								<a class="btn btn-outline-dark mt-auto" href="{% url 'detail' product_id=product.id %}"
+									>View product</a
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	const searchQuery = document.getElementById('search-query');
+	const filterLinks = document.querySelectorAll('#filter-link');
+
+	filterLinks.forEach(link => {
+		link.addEventListener('click', (event) => {
+			event.preventDefault();
+
+			const filterValue = event.target.textContent.toLowerCase().trim();
+			const searchValue = searchQuery.value;
+
+			const link = document.createElement('a')
+			link.href = `/?q=${filterValue}&search=${searchValue}`
+			searchQuery.parentNode.innerHTML += link
+			link.click();
+		})
+	})
+</script>
+
+{% endblock content %}

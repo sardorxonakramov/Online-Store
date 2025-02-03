@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="container px-4 px-lg-5">
+		<a class="navbar-brand" href="{% url 'home' %}">Start Bootstrap</a>
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent"
+			aria-expanded="false"
+			aria-label="Toggle navigation"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+				{% if not is_home_page and not is_login %}
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+					</li>
+				{% endif %}
+					{% if is_home_page %}
+					<li class="nav-item dropdown">
+						<a
+							class="nav-link dropdown-toggle"
+							id="navbarDropdown"
+							href="#"
+							role="button"
+							data-bs-toggle="dropdown"
+							aria-expanded="false"
+							>Categories</a
+						>
+						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="{% url 'home' %}">All Products</a></li>
+							<li><hr class="dropdown-divider" /></li>
+							<li><a class="dropdown-item" href="{% url 'home' %}?q=rating">Popular Items</a></li>
+							<li><a class="dropdown-item" href="{% url 'home' %}?q=new-arrivals">New Arrivals</a></li>
+						</ul>
+					</li>
+				</ul>
+				<div class="d-flex gap-5 align-items-center">
+					{% if request.user.is_authenticated %}
+						<a href="{% url 'cart' %}" style="position: relative; color: black;">
+							<i class="material-icons" style="font-size: 36px;">shopping_cart</i>
+							<div style="font-size: 12px; position: absolute; top: -5px; right: -10px; border-radius: 50%; padding: 0 4px; background-color: black; color: white;">
+								{{ cart_products_quantity }}
+							</div>
+						</a>
+					{% endif %}
+					<form class="d-flex gap-2">
+						<input placeholder="Search products ..." id="search-query" type="search" class="form-control" name="search" value="{{ search }}" />
+						<button class="btn btn-outline-dark" type="submit">
+							<i class="bi-search-fill me-1"></i>
+							Search
+						</button>
+					</form>
+					{% if request.user.is_authenticated %}
+						<a href="{% url 'logout' %}" class="btn btn-outline-dark ms-3">Logout</a>
+					{% else %}
+						<a href="{% url 'login' %}" class="btn btn-outline-dark ms-3">Login/Sign up</a>
+					{% endif %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</nav>

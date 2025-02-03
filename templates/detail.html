@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+        <!-- Product section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6">
+                        <img
+                          class="card-img-top mb-5 mb-md-0"
+                          src="{{ product.images.url }}"
+                          alt="{{ product.name }}"
+                          width="600"
+                          height="700"
+                
+                        
+                        />
+                      </div>
+                    <div class="col-md-6">
+                        <div class="small mb-1 d-flex flex-row gap-2 align-items-center">
+                            Rating: 
+                            <div
+									class="d-flex small text-warning"
+								>
+									{% for star in '12345' %}
+										{% if product.rating|default:0 >= star|add:"0" %}
+											<div class="bi-star-fill"></div>
+										{% else %}
+											<div class="bi-star"></div>
+										{% endif %}
+									{% endfor %}
+								</div></div>
+                        
+                        <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+                        <div class="fs-5 mb-5">
+                            <span class="text-decoration-line-through text-muted">${{ product.old_price|intcomma }}</span>
+                            - 
+                            <span>${{ product.new_price }}</span>
+                        </div>
+                        <p class="lead">
+                            {{ product.description|linebreaksbr|truncatechars:100 }}
+                        </p>
+                        <div class="d-flex w-100">
+                            <form action="{% url 'add_to_cart' product_id=product.id %}" method="post" class="w-100">
+                                {% csrf_token %}
+                                <input id="product-id" type="hidden" name="product_id" value="{{ product.id }}">
+                                <input id="product-quantity" type="hidden" name="quantity" value="1">
+                                <div class="d-flex flex-column w-100">
+                                    {% if not request.user.is_authenticated %}
+                                        <b>
+                                            Please, <a href="{% url 'login' %}?next=/detail/{{ product.id }}/">log in</a> to add product to your cart
+                                        </b>
+                                    {% else %}
+                                        <div class="d-flex align-items-center gap-2 w-100">
+                                            <button id="decrement-btn" type="button" class="btn btn-secondary" style="width: 17.5%;">-</button>
+                                            <p id="quantity" class="m-0 border border-secondary py-2 px-4 rounded">1</p>
+                                            <button id="increment-btn" type="button" class="btn btn-secondary" style="width: 17.5%;">+</button>
+                                        </div>
+                                        <button id="add-to-cart" type="submit" class="mt-1 btn btn-success w-50">Add to cart</button>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container mt-4 mb-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="text-center">
+                        {% if product.comment_set.all.0 %}
+                            <h2>Latest comments</h2>    
+                        {% endif %}
+                    </div>
+                    
+                    {% for comment in last_3_comments %}
+                        <div class="media card p-4 mt-2" id="comments-section">
+                            <div class="media-body">
+                            <h3 class="mt-0">{{ comment.owner.first_name }} {{ comment.owner.last_name }}</h3>
+                            <p>{{ comment.body|linebreaksbr }}</p>
+                            <b>
+                                <small class="text-mutes">{{ comment.created|timesince }} ago</small>
+                            </b>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h3 class="text-muted text-center">No comments yet 🙃</h3>
+                    {% endfor %}
+                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="col-8 offset-2 mt-5">
+                    
+                        <div class=" p-5">
+                            <div class="text-center">
+                                <h3>Add Comment</h3>
+                            </div>
+                        
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label for="formGroupExampleInput2">Your comment</label>
+                                <textarea name="comment" class="form-control" id="" cols="30" rows="10"></textarea>
+                            </div>
+
+                            <div class="form-group mb-3 d-flex">
+                                <input type="submit" class="btn btn-lg btn-success w-100" value="Send">
+                            </div>
+                        </form>
+
+                        </div>
+                        
+                    </div>
+                {% else %}
+                    <h3 class="text-center mt-3">
+                        <a href="#!">Log in</a> 
+                        to leave a comment
+                    </h3>
+                {% endif %} 
+            </div>
+        </div>
+        <!-- Related items section-->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+      <h2 class="fw-bolder mb-4">Related products</h2>
+      <div
+        class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"
+      >
+  
+      {% for produc in products %}
+      <div class="col mb-5">
+        <div class="card h-100">
+            {% if product.is_sale %}
+                <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+            {% endif %}
+            <!-- Product image-->
+            <img
+            class="card-img-top"
+            src="{% if produc.images %}
+            {{ produc.images.url }}
+            {% else %}
+            https://dummyimage.com/450x300/dee2e6/6c757d.jpg
+            {% endif %}"
+            alt="{{ produc.name }}"
+            width="450"
+            height="300"
+          />
+            <!-- Product details-->
+            <div class="card-body p-4">
+                <div class="text-center">
+                    <!-- Product name-->
+                    <h5 class="fw-bolder">{{ product.name }}</h5>
+                    <!-- Product reviews-->
+                    <div
+                        class="d-flex justify-content-center small text-warning mb-2"
+                    >
+                        {% for star in '12345' %}
+                            {% if product.rating|default:0 >= star|add:"0" %}
+                                <div class="bi-star-fill"></div>
+                            {% else %}
+                                <div class="bi-star"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <!-- Product price-->
+                    <del class="text-muted">${{ product.old_price|intcomma }}</del> - <span>${{ product.new_price|intcomma }}</span>
+                </div>
+            </div>
+            <!-- Product actions-->
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="text-center">
+                    <a class="btn btn-outline-dark mt-auto" href="{% url 'detail' product_id=product.id %}"
+                        >View product</a
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+        {% endfor %}
+  
+        
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer-->
+  
+
+        <style>
+            button:active {
+                scale: 90%;
+            }
+        </style>
+
+        <script>
+            // Product quantity counter
+            const incrementBtn = document.getElementById('increment-btn');
+            const decrementBtn = document.getElementById('decrement-btn');
+            const quantity = document.getElementById('quantity');
+
+            incrementBtn.addEventListener('click', () => {
+                quantity.textContent = Number(document.getElementById('quantity').textContent) + 1
+                document.getElementById('product-quantity').value = Number(document.getElementById('quantity').textContent)
+            })
+
+            decrementBtn.addEventListener('click', () => {
+                if (Number(document.getElementById('quantity').textContent) > 1) {
+                    quantity.innerHTML = Number(document.getElementById('quantity').textContent) - 1
+                    document.getElementById('product-quantity').value = Number(document.getElementById('quantity').textContent)
+                }
+            })
+            // =============================================
+        </script>
+{% endblock content %}
