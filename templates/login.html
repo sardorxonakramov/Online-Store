@@ -6,8 +6,10 @@
     {% csrf_token %}
     <h2 class="text-center">Login</h2>
     <hr>
-    <input required class="form-control" type="email" name="username" id="username" placeholder="thedevu101@gmail.com">
-    <input required class="form-control" type="password" name="password" placeholder="********">
+    <label for="username">Email:</label>
+    <input required class="form-control" type="email" name="username" id="username" placeholder="example@gmail.com">
+    <label for="password">Password:</label>
+    <input required class="form-control" type="password" id="password" name="password" placeholder="your password">
     <input type="hidden" name="next" value="{{ request.META.HTTP_REFERER }}">
 
     {% if form.errors %}

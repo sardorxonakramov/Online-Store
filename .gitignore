@@ -1,12 +1,47 @@
-.venv/
-.env/
-venv/
-env/
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
 
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
+.Python
+
+# Django specific files
+db.sqlite3
+*.log
+media/
+staticfiles/
+*.pot
+*.pyc
+
+# Settings for IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# macOS specific
 .DS_Store
 
-*/__pycache__/
-*/*/__pycache__/
-*/*/*/__pycache__/
+# Windows specific
+Thumbs.db
 
+# Secrets
+*.env
+.env.*
 
+# Testing
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+
+# Migrations
+*/migrations/*
+!*/migrations/__init__.py
