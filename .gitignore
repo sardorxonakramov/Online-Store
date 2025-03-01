@@ -10,13 +10,7 @@ ENV/
 .venv/
 .Python
 
-# Django specific files
-db.sqlite3
-*.log
-media/
-staticfiles/
-*.pot
-*.pyc
+
 
 # Settings for IDEs
 .idea/
